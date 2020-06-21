@@ -1,31 +1,75 @@
 import React, { Component } from 'react';
 import axios from 'axios'
+import "./App.css"
 
-
+// DBR8Klvy3Cd7Qmu7lX_YD9G8Kj8wVm7cDZDTvq5bYok
 
 
 class App extends Component {
   state = {
-    post: []
+    post: null,
+    search: '',
   }
   componentDidMount() {
-    axios.get(process.env.REACT_APP_API)
+    axios
+      .get(
+        `https://api.unsplash.com/search/photos?query=computer&client_id=${process.env.REACT_APP_UNPLASH_API}`
+      )
       .then((res) => {
         this.setState({
-          post: res.data.slice(0, 10),
+          post: res.data.results,
         });
-        console.log(this.state.post);
-        
-        
+        // console.log(this.state.post);
+        // console.log(res.data.results);
+
       });
   }
-  render() {
-    
-    console.log(process.env.REACT_APP_HI);
-    
+  handleChange = (e) => {
+    this.setState({
+      [e.target.id]: e.target.value
+    })
+
+  }
+  handleSubmit = (e) => {
+    e.preventDefault()
+    document.querySelector('#search').value = ''
+    this.setState({
+      post: null
+    })
+    axios
+      .get(
+        `https://api.unsplash.com/search/photos?query=${this.state.search}&client_id=${process.env.REACT_APP_UNPLASH_API}`
+      )
+      .then((res) => {
+        this.setState({
+          post: res.data.results,
+        });
+        // console.log(this.state.post);
+        // console.log(res);
+      });
+
+  }
+  render() {  
+    const images = this.state.post ? (this.state.post.map((pics) => {
+      return (
+        <div className="content" key={pics.id}>
+          <img src={pics.urls.small} alt="" />
+          <a href={pics.links.download_location}>link</a>
+        </div>
+      );
+    }) ) : (
+      <div className="content">
+        <p>Loading images</p>
+      </div>
+    )
     return (
       <div className="App">
-        <h1>Abhijeet{process.env.REACT_APP_HI}</h1>
+        <h1>Abhijeet.R. Kushwaha</h1>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" id="search" onChange={this.handleChange} />
+          <button type="submit">search</button>
+        </form>
+        {images}
       </div>
     );
   }
