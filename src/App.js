@@ -19,7 +19,7 @@ class App extends Component {
         this.setState({
           post: res.data.results,
         });
-        // console.log(this.state.post);
+        console.log(this.state.post);
         // console.log(res.data.results);
 
       });
@@ -49,12 +49,57 @@ class App extends Component {
       });
 
   }
+  download = (url, id) => {
+    console.log(url);
+    axios({
+      url: url, //your url
+      method: "GET",
+      responseType: "blob", // important
+      // Authorization: process.env.REACT_APP_UNPLASH_API,
+    }).then((response) => {
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", id + ".jpg"); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+    });
+    
+    // axios({
+    //   // url: "http://api.dev/file-download",
+    //   url: "https://api.unsplash.com/random/500x500",
+    //   // url: `${url}/&client_id=${process.env.REACT_APP_UNPLASH_API}`,
+    //   method: "GET",
+    //   responseType: "blob", // important
+    // }).then((response) => {
+    //   // const url = window.URL.createObjectURL(new Blob([response.data]));
+    //   // const link = document.createElement("a");
+    //   // link.href = url;
+    //   // link.setAttribute("download", "file.jpg");
+    //   // document.body.appendChild(link);
+    //   // link.click();
+    //   // stack
+    //   const url = window.URL.createObjectURL(new Blob([response.data]));
+    //   const link = document.createElement("a");
+    //   link.href = url;
+    //   link.setAttribute("download", "file.jpg"); //or any other extension
+    //   document.body.appendChild(link);
+    //   link.click();
+    // });
+  }
   render() {  
     const images = this.state.post ? (this.state.post.map((pics) => {
       return (
         <div className="content" key={pics.id}>
           <img src={pics.urls.small} alt="" />
-          <a href={pics.links.download_location}>link</a>
+          {/* <a href={pics.links.download}>link</a>pics.links.download_location */}
+          <button
+            onClick={() => {
+              this.download(pics.urls.regular,pics.id);
+            }}
+          >
+            download
+          </button>
         </div>
       );
     }) ) : (
