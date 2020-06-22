@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import "./App.css"
 
-// DBR8Klvy3Cd7Qmu7lX_YD9G8Kj8wVm7cDZDTvq5bYok
+
 
 
 class App extends Component {
